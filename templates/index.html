@@ -1,0 +1,262 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Assistant</title>
+
+<link rel="stylesheet" href="/static/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+    <div class="logo">
+        🤖 AI Assistant
+    </div>
+
+    <button class="new-chat" onclick="newChat()">
+        + New Chat
+    </button>
+
+</div>
+
+<!-- Main -->
+ 
+<div class="main">
+
+    <div class="header">
+        AI Assistant
+    </div>
+
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message bot">
+            <div class="bubble">
+                Hello 👋 I'm your AI Assistant.
+                Ask me anything.
+            </div>
+        </div>
+
+    </div>
+
+    <div class="input-area">
+
+        <input
+            type="text"
+            id="msg"
+            placeholder="Message AI Assistant..."
+            autocomplete="off"
+        >
+
+        <button
+            class="send-btn"
+            onclick="sendMessage()"
+        >
+            Send
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+function saveChat(){
+    localStorage.setItem(
+        "chatHistory",
+        document.getElementById(
+            "chatContainer"
+        ).innerHTML
+    );
+}
+
+function loadChat(){
+
+    let saved =
+    localStorage.getItem(
+        "chatHistory"
+    );
+
+    if(saved){
+        document.getElementById(
+            "chatContainer"
+        ).innerHTML = saved;
+    }
+
+    scrollBottom();
+}
+
+function scrollBottom(){
+
+    const container =
+    document.getElementById(
+        "chatContainer"
+    );
+
+    container.scrollTop =
+    container.scrollHeight;
+}
+
+function getTime(){
+
+    return new Date()
+    .toLocaleTimeString(
+        [],
+        {
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+}
+
+function newChat(){
+
+    localStorage.removeItem(
+        "chatHistory"
+    );
+
+    document.getElementById(
+        "chatContainer"
+    ).innerHTML = `
+    <div class="message bot">
+        <div class="bubble">
+            Hello 👋 I'm your AI Assistant.
+        </div>
+    </div>
+    `;
+
+    saveChat();
+}
+
+async function sendMessage(){
+
+    let input =
+    document.getElementById(
+        "msg"
+    );
+
+    let msg =
+    input.value.trim();
+
+    if(!msg) return;
+
+    const container =
+    document.getElementById(
+        "chatContainer"
+    );
+
+    container.innerHTML += `
+    <div class="message user">
+        <div class="bubble">
+            ${msg}
+            <br>
+            <small>
+                ${getTime()}
+            </small>
+        </div>
+    </div>
+    `;
+
+    saveChat();
+
+    scrollBottom();
+
+    input.value = "";
+
+    container.innerHTML += `
+    <div
+        class="message bot"
+        id="typing"
+    >
+        <div class="bubble typing">
+            AI is typing...
+        </div>
+    </div>
+    `;
+
+    scrollBottom();
+
+    try{
+
+        const res =
+        await fetch(
+            `/chat?msg=${encodeURIComponent(msg)}`
+        );
+
+        const data =
+        await res.json();
+
+        document
+        .getElementById(
+            "typing"
+        )
+        .remove();
+
+        container.innerHTML += `
+        <div class="message bot">
+            <div class="bubble">
+                ${
+                    data.response ||
+                    data.error
+                }
+                <br>
+                <small>
+                    ${getTime()}
+                </small>
+            </div>
+        </div>
+        `;
+
+        saveChat();
+
+        scrollBottom();
+
+    }
+    catch(err){
+
+        document
+        .getElementById(
+            "typing"
+        )
+        .remove();
+
+        container.innerHTML += `
+        <div class="message bot">
+            <div class="bubble">
+                Error connecting server.
+            </div>
+        </div>
+        `;
+
+        saveChat();
+    }
+}
+
+document
+.getElementById("msg")
+.addEventListener(
+    "keypress",
+    function(e){
+
+        if(e.key==="Enter"){
+            sendMessage();
+        }
+
+    }
+);
+
+window.onload =
+loadChat;
+
+</script>
+
+</body>
+</html>
+```
