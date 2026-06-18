@@ -17,7 +17,12 @@ app = FastAPI()
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://aichatbot-1-88i7.onrender.com", "https://localhost"],
+    allow_origins=[
+        "https://aichatbot-r5fz.onrender.com",
+        "http://localhost",
+        "https://localhost",
+        "capacitor://localhost"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
