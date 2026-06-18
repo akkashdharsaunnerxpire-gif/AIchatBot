@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { IoSend } from "react-icons/io5";
 
-import Header from "./components/Header";
+import Header from "./Components/Header";
 import Sidebar from "./components/Sidebar";
 import Message from "./components/Message";
 import Welcome from "./components/Welcome";
