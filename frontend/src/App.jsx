@@ -24,11 +24,37 @@ function App() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API}/chat?msg=${encodeURIComponent(currentMsg)}`);
+      console.log("API URL:", API);
+
+      const res = await fetch(
+        `${API}/chat?msg=${encodeURIComponent(currentMsg)}`,
+      );
+
+      console.log("Status:", res.status);
+
+      if (!res.ok) {
+        throw new Error(`HTTP Error ${res.status}`);
+      }
+
       const data = await res.json();
-      setMessages((prev) => [...prev, { type: "bot", text: data.response }]);
-    } catch {
-      setMessages((prev) => [...prev, { type: "bot", text: "Server Error" }]);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "bot",
+          text: data.response,
+        },
+      ]);
+    } catch (err) {
+      console.error(err);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: "bot",
+          text: String(err),
+        },
+      ]);
     }
     setLoading(false);
   };
