@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { IoSend } from "react-icons/io5";
 
 import Header from "./Components/Header";
-import Sidebar from "./components/Sidebar";
-import Message from "./components/Message";
-import Welcome from "./components/Welcome";
-import TypingLoader from "./components/TypingLoader";
+import Sidebar from "./Components/Sidebar";
+import Message from "./Components/Message";
+import Welcome from "./Components/Welcome";
+import TypingLoader from "./Components/TypingLoader";
 
 function App() {
   const [msg, setMsg] = useState("");
