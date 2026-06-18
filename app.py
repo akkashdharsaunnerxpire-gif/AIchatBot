@@ -17,12 +17,15 @@ app = FastAPI()
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://aichatbot-1-88i7.onrender.com", "https://localhost"],
+    allow_origins=[
+        "https://aichatbot-r5fz.onrender.com",
+        "http://localhost",
+        "capacitor://localhost"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Groq Client
 client = Groq(
     api_key=os.getenv("GROQ_API_KEY")
